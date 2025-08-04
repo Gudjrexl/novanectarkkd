@@ -1,0 +1,55 @@
+const express = require('express');
+const cors = require('cors');
+require("dotenv").config();
+const connectDB = require('./config/mongodbdb');
+const signupRouter = require('./ApiRoute/Signuprouter');
+const loginRouter = require('./ApiRoute/LoginRoute'); 
+const bodyParser = require('body-parser');
+const CardDetail = require('./ApiRoute/CardDet'); 
+const Advertisement = require('./ApiRoute/homeadvertisement'); 
+const productdetail = require('./ApiRoute/ProductRoute'); 
+const profileRoute = require('./ApiRoute/ProfileRoute'); 
+const bankverificationapi = require('./ApiRoute/bankverificationapi');
+const kycadpan = require('./ApiRoute/kycroute');
+const transaction = require('./ApiRoute/Transaction');
+const qrcodelist = require('./ApiRoute/qrlist');
+const offerRoute = require('./ApiRoute/Offerroute');
+const clientLogin = require('./clientApiRoute/client');
+const homepage = require('./clientApiRoute/Homepage');
+const requestapprove = require('./clientApiRoute/requestaprrove');
+const category = require('./clientApiRoute/Categoryapi');
+
+const app = express();
+const path = require('path');
+
+app.use(express.json());
+app.use(cors());
+app.use(bodyParser.json());
+connectDB();
+app.use('/user', signupRouter);
+app.use('/user', loginRouter);
+app.use('/user', CardDetail);
+app.use('/profilepic', express.static(path.join(__dirname, 'profilepic')));
+app.use('/user', profileRoute);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/advertisement", Advertisement);
+app.use('/productimage', express.static(path.join(__dirname, 'productimage')));
+app.use('/productdetails', productdetail);
+app.use('/passbookuploads', express.static(path.join(__dirname, 'passbookuploads')));
+app.use('/user', bankverificationapi);
+app.use('/kycimagea', express.static(path.join(__dirname, 'Kycimagea')));
+app.use('/kycimagep', express.static(path.join(__dirname, 'Kycimagep')));
+app.use('/user', kycadpan);
+app.use('/coin', transaction);
+app.use('/qrcode', qrcodelist);
+app.use('/offerimg', express.static(path.join(__dirname, 'offerimage')));
+app.use('/offerdetails', offerRoute);
+app.use('/client', clientLogin);
+app.use('/client', homepage);
+app.use('/client', requestapprove);
+app.use("/Categoryimage", express.static(path.join(__dirname, "Categoryimage")));
+app.use('/client', category);
+
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
