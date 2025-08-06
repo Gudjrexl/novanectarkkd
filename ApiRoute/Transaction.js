@@ -6,7 +6,6 @@ const path = require("path");
 const fs = require("fs"); 
 const NovaNectorProfile = require("../schema/ProfileSchema")
 const transactionSchema = require('../schema/transactionschema'); 
-const checkCoinSchema = require('../schema/checkcoin');
 const coinDetails = require('../schema/cointansdetails');
 const clientaprove = require('../schema/clientaproveSchema');
 const app = express();
@@ -97,10 +96,19 @@ router.post('/credit', async (req, res) => {
   }
 
   try {
-    const checkCoin = await checkCoinSchema.findOne({ scanQRCode: scanQRCodes }); 
+  const detailscoinuser = await coinDetails.findOne({ coincode: scanQRCodes });
+    if (detailscoinuser) {
+      return res.status(400).json({
+        coinusername: detailscoinuser.coinusername,
+        coindate: detailscoinuser.coindate,
+        creditcoininacount: false
+      });
 
-    if (checkCoin) {
-      const user = await User.findOne({ phone: contactcno });
+      
+    }
+
+    else{
+const user = await User.findOne({ phone: contactcno });
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
       }
@@ -123,7 +131,6 @@ userid: user.userid,
         coindate: new Date().toISOString().split('T')[0],
       }).save();
 
-      await checkCoinSchema.deleteOne({ scanQRCode: scanQRCodes });
 
       return res.status(200).json({
         coinusername: user.name,
@@ -131,17 +138,8 @@ userid: user.userid,
         creditcoininacount: true
       });
     }
-
-    const detailscoinuser = await coinDetails.findOne({ coincode: scanQRCodes });
-    if (detailscoinuser) {
-      return res.status(400).json({
-        coinusername: detailscoinuser.coinusername,
-        coindate: detailscoinuser.coindate,
-        creditcoininacount: false
-      });
-    }
-
-    return res.status(404).json({ message: 'QR code not found in system' });
+   
+    
 
   } catch (error) {
     console.error('Coin credit error:', error);

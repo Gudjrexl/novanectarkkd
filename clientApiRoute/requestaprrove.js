@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const User = require('../schema/Usersign'); 
 const transactionSchema = require('../schema/transactionschema'); 
-const checkCoinSchema = require('../schema/checkcoin');
 const clientaprove = require('../schema/clientaproveSchema');
 const app = express();
 app.use(express.json());
